@@ -125,14 +125,15 @@ impl Docker {
         for node in nodes {
             let status = node.status.unwrap();
             let state = status.state.clone().unwrap();
+            let spec = node.spec.clone().unwrap();
             let addr = status.addr.clone().unwrap();
 
             let node_info = NodeInfo {
                 id: node.id.unwrap(),
                 version: node.version.unwrap().index.unwrap(),
                 address: addr,
-                role: state.clone(),
-                availability: node.spec.unwrap().availability.unwrap(),
+                role: spec.role.unwrap(),
+                availability: spec.availability.unwrap(),
                 state: state.clone(),
             };
             vec.push(node_info);
