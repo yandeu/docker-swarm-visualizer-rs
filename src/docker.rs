@@ -96,7 +96,7 @@ impl Docker {
         let disk = Disk {
             total_space,
             available_space,
-            disk_percent,
+            disk_percent: 1f64 - disk_percent,
         };
 
         Info {
