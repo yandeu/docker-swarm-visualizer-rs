@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  manager:
+    environment:
+      - VISUALIZER_TYPE=manager
+    image: yandeu/visualizer-rs:dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - agent_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    labels:
+      - visualizer.manager
+    ports:
+      - '9510:9510'
+    healthcheck:
+      test: curl -f http://localhost:9510/healthcheck || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+
+  agent:
+    environment:
+      - VISUALIZER_TYPE=agent
+    image: yandeu/visualizer-rs:dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+    labels:
+      - visualizer.agent
+    healthcheck:
+      test: curl -f http://localhost:9511/healthcheck || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+
+networks:
+  agent_network:
+    driver: overlay
+    attachable: true

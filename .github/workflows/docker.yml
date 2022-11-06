@@ -1,0 +1,75 @@
+# read: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: Docker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - www/**
+      - Cargo.lock
+      - Dockerfile
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: clippy
+          # x86_64-unknown-linux-musl is needed for alpine
+          target: x86_64-unknown-linux-musl
+          override: true
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          # x86_64-unknown-linux-musl is needed for alpine
+          args: --target x86_64-unknown-linux-musl --all-features --release
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-features --release
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Compile TypeScript
+        run: |
+          cd www
+          npm install -g typescript
+          tsc
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: yandeu/visualizer-rs:dev
