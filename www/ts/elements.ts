@@ -33,7 +33,7 @@ const node = node => {
               >
                 <p class="circle ${status} ${role}"></p>
                 <b>${address}&nbsp;</b>
-                ${role === 'manager' ? '<b class="upload-action">⇪</b>' : ''}
+                <!-- ${role === 'manager' ? '<b class="upload-action">⇪</b>' : ''} -->
             </div>
           </li>
           <li class="os">-</li>
