@@ -231,9 +231,9 @@ dependencies = [
 
 [[package]]
 name = "containers-api"
-version = "0.7.0"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56082e32f18a6d60f06c736b49e234deffb93b13cb87091a39e0dec053d03819"
+checksum = "ef94b0ff8338282b35bafb408eb0a3e53ba05bdb3b36840589ab9a67a6682593"
 dependencies = [
  "chrono",
  "flate2",
@@ -495,9 +495,9 @@ dependencies = [
 
 [[package]]
 name = "docker-api"
-version = "0.12.2"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "522a3ae33cf4fc165de192eb9c563b755bc43cda9bd6f442b2d511b84514b917"
+checksum = "64181526a363e08b4097d205c012310b8b8caa54bd94cbc60f586c8a268fb744"
 dependencies = [
  "asynchronous-codec",
  "base64 0.13.1",
@@ -519,9 +519,9 @@ dependencies = [
 
 [[package]]
 name = "docker-api-stubs"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5872f5e057625a972acce1a51b461284eab32b7e594e18f8fc2f63724075da47"
+checksum = "6198e6d77eb486d04c9b3997aec536428a7cbba833e84cdfda49e144c8df1734"
 dependencies = [
  "chrono",
  "serde",

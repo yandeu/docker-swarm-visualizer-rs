@@ -14,10 +14,17 @@ use self::data::Disk;
 pub struct Docker;
 impl Docker {
     pub fn get_docker_api() -> DockerAPI {
+        // docker api v1.41
+        let api_version = docker_api::ApiVersion::new(1, Some(41), None);
+
         #[cfg(unix)]
-        let docker = docker_api::Docker::new("unix://var/run/docker.sock").unwrap();
+        let docker =
+            docker_api::Docker::new_versioned("unix://var/run/docker.sock", api_version).unwrap();
         #[cfg(not(unix))]
-        let docker = docker_api::Docker::new("tcp://localhost:2375").unwrap();
+        let docker =
+            docker_api::Docker::new_versioned("tcp://localhost:2375", api_version).unwrap();
+
+        // println!("endpoint: {}", api_version.make_endpoint(&String::new()));
 
         docker
     }
