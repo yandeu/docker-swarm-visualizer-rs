@@ -51,8 +51,10 @@ export const calculateCPUUsage = stats => {
   let cpuPercent = 0.0
 
   try {
-    const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage
+    if (!stats.precpu_stats.cpu_usage.total_usage) throw new Error('precpu_stats.cpu_usage.total_usage is missing')
+    if (!stats.precpu_stats.system_cpu_usage) throw new Error('stats.precpu_stats.system_cpu_usage is missing')
 
+    const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage
     const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage
 
     if (systemCpuDelta > 0.0 && cpuDelta > 0.0)
@@ -61,6 +63,6 @@ export const calculateCPUUsage = stats => {
     return cpuPercent.toFixed(0) + '%'
   } catch (error: any) {
     console.log(error.message)
-    return cpuPercent.toFixed(0) + '%'
+    return 'unknown'
   }
 }
