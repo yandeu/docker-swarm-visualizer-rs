@@ -6,6 +6,7 @@ pub struct CpuUsage {
     pub total_usage: i64,
 }
 
+// https://docs.docker.com/engine/api/v1.42/#tag/Container/operation/ContainerStats
 structstruck::strike! {
     #[strikethrough[derive(Debug, Serialize, Deserialize)]]
     pub struct ContainerStats {
@@ -19,7 +20,7 @@ structstruck::strike! {
         memory_stats: struct  {
             pub limit: i64,
             pub usage: i64,
-            pub max_usage: i64,
+            // pub max_usage: i64,
             // pub stats: struct  {
             //     pub total_inactive_file: i64,
             // }
