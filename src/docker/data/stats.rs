@@ -20,9 +20,9 @@ structstruck::strike! {
             pub limit: i64,
             pub usage: i64,
             pub max_usage: i64,
-            pub stats: struct  {
-                pub total_inactive_file: i64,
-            }
+            // pub stats: struct  {
+            //     pub total_inactive_file: i64,
+            // }
         }
     }
 }
