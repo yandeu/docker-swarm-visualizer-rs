@@ -46,15 +46,17 @@ export const calculateCPUUsage = stats => {
   // https://github.com/moby/moby/blob/eb131c5383db8cac633919f82abad86c99bffbe5/cli/command/container/stats_helpers.go#L175-L188
   // https://stackoverflow.com/questions/35692667/in-docker-cpu-usage-calculation-what-are-totalusage-systemusage-percpuusage-a
   // https://docs.docker.com/config/containers/runmetrics/
+  // https://docs.docker.com/engine/api/v1.42/#tag/Container/operation/ContainerStats
 
   let cpuPercent = 0.0
 
   try {
     const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage
 
-    const systemDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage
+    const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage
 
-    if (systemDelta > 0.0 && cpuDelta > 0.0) cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100.0
+    if (systemCpuDelta > 0.0 && cpuDelta > 0.0)
+      cpuPercent = (cpuDelta / systemCpuDelta) * stats.cpu_stats.online_cpus * 100.0
 
     return cpuPercent.toFixed(0) + '%'
   } catch (error: any) {

@@ -4,7 +4,7 @@
  * @license   {@link https://github.com/yandeu/docker-swarm-visualizer/blob/main/LICENSE LICENSE}
  */
 
-import { toPercent, toMb, toGb, ipToId, calculateCPUUsage, toMiB } from './misc.js'
+import { ipToId, calculateCPUUsage, toMiB } from './misc.js'
 
 // keep track of services
 const services: string[] = []
@@ -114,10 +114,11 @@ const completeNode = (id, ip /* internal IP*/, containers) => {
 const container = (container, _MemTotal) => {
   // TODO:(yandeu) re-implement cpu and mem usage
 
+  // https://docs.docker.com/engine/api/v1.42/#tag/Container/operation/ContainerStats
   const memory_stats = container.stats.memory_stats
-  // https://github.com/docker/cli/blob/5f07d7d5a12423c0bc1fb507f4d006ad0cdfef42/cli/command/container/stats_helpers.go#L239
-  const mem = memory_stats.usage - memory_stats?.stats?.total_inactive_file || 0
-  const memPercent = (mem / memory_stats.limit) * 100
+  const used_memory = memory_stats.usage - (memory_stats?.stats?.cache || 0)
+  const available_memory = memory_stats.limit
+  const memoryUsagePercent = (used_memory / available_memory) * 100.0
 
   const cpuUsage = calculateCPUUsage(container.stats)
 
@@ -142,8 +143,8 @@ const container = (container, _MemTotal) => {
         <li><b style="font-size: 14px;"class="is-${service && color}">${name}</b></li>
         <li>${state}</li>
         <li>${status}</li>
-        <li>MEM ${toMiB(mem)}MiB</li>
-        <li>MEM ${memPercent.toFixed(2)}%</li>
+        <li>MEM ${toMiB(used_memory)}MiB</li>
+        <li>MEM ${memoryUsagePercent.toFixed(2)}%</li>
         <li>CPU ${cpuUsage}</li>
       </ul>
     </div>
