@@ -7,7 +7,6 @@ use docker_api::Docker as DockerAPI;
 use rocket::futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, vec};
-use std::env;
 use sysinfo::{CpuExt, DiskExt, NetworkExt, NetworksExt, ProcessExt, System, SystemExt};
 
 use self::data::Disk;
@@ -18,19 +17,12 @@ impl Docker {
         // docker api v1.41
         let api_version = docker_api::ApiVersion::new(1, Some(41), None);
 
-        let docker_socket = env::var("DOCKER_SOCKET").unwrap_or_else(|_| {
-            #[cfg(unix)]
-            {
-                String::from("unix://var/run/docker.sock")
-            }
-            #[cfg(not(unix))]
-            {
-                String::from("tcp://localhost:2375")
-            }
-        });
-
+        #[cfg(unix)]
         let docker =
-            docker_api::Docker::new_versioned(&docker_socket, api_version).unwrap();
+            docker_api::Docker::new_versioned("unix://var/run/docker.sock", api_version).unwrap();
+        #[cfg(not(unix))]
+        let docker =
+            docker_api::Docker::new_versioned("tcp://localhost:2375", api_version).unwrap();
 
         // println!("endpoint: {}", api_version.make_endpoint(&String::new()));
 

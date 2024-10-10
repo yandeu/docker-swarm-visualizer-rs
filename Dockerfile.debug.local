@@ -1,4 +1,4 @@
-FROM --platform=amd64 rust:1.80.0 AS builder
+FROM rust:1.65.0 as builder
 COPY src/ src/
 COPY www/ www/
 COPY Cargo.lock Cargo.lock
@@ -7,7 +7,7 @@ COPY Cargo.toml Cargo.toml
 RUN rustup target add x86_64-unknown-linux-musl
 RUN cargo build --target x86_64-unknown-linux-musl
 
-FROM alpine:3.20
+FROM alpine:3.16
 RUN apk update
 RUN apk upgrade
 RUN apk add curl
