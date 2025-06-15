@@ -20,7 +20,9 @@ structstruck::strike! {
             pub system_cpu_usage: Option<i64>
         },
         memory_stats: struct  {
+            #[serde(default)]
             pub limit: i64,
+            #[serde(default)]
             pub usage: i64
         }
     }
